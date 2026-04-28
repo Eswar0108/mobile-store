@@ -19,7 +19,7 @@ export default function SearchResultsPage() {
       <Helmet><title>Search: "{q}" — MobileStore</title></Helmet>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <h1 className="text-xl font-bold text-gray-900 mb-1">Results for "{q}"</h1>
-        <p className="text-sm text-gray-500 mb-6">{data?.total || 0} results found</p>
+        <p className="text-sm text-gray-500 mb-6">{data?.pagination?.total || 0} results found</p>
 
         {isLoading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">

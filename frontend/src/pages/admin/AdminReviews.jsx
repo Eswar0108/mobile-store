@@ -22,7 +22,7 @@ export default function AdminReviews() {
   });
 
   const actionMutation = useMutation({
-    mutationFn: ({ id, action }) => api.patch(`/reviews/admin/${id}`, { action }),
+    mutationFn: ({ id, action }) => api.patch(`/reviews/admin/${id}`, { isApproved: action === 'approve' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-reviews-pending'] });
       queryClient.invalidateQueries({ queryKey: ['admin-reviews-flagged'] });
@@ -39,7 +39,7 @@ export default function AdminReviews() {
     },
   });
 
-  const reviews = tab === 'pending' ? pending?.reviews : flagged?.reviews;
+  const reviews = tab === 'pending' ? pending?.data : (Array.isArray(flagged) ? flagged : []);
 
   return (
     <>

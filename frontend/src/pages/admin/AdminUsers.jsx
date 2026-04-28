@@ -91,7 +91,7 @@ export default function AdminUsers() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {data?.users?.map((u) => (
+                {data?.data?.map((u) => (
                   <tr key={u.id} className="hover:bg-gray-50">
                     <td className="p-3">
                       <p className="font-medium text-gray-900">{u.name}</p>

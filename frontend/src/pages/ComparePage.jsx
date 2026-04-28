@@ -22,8 +22,8 @@ export default function ComparePage() {
   }
 
   const specLabels = [
-    'brand', 'category', 'stockQuantity',
-    ...new Set(items.flatMap((p) => p.specs?.map((s) => s.label) || [])),
+    'brand', 'category', 'stock',
+    ...new Set(items.flatMap((p) => p.specs?.map((s) => s.key) || [])),
   ];
 
   return (
@@ -61,8 +61,8 @@ export default function ComparePage() {
                   let value;
                   if (label === 'brand') value = p.brand;
                   else if (label === 'category') value = p.category;
-                  else if (label === 'stockQuantity') value = p.stockQuantity;
-                  else value = p.specs?.find((s) => s.label === label)?.value || '—';
+                  else if (label === 'stock') value = p.stock;
+                  else value = p.specs?.find((s) => s.key === label)?.value || '—';
                   return (
                     <td key={p.id} className="p-3 text-sm text-gray-900 text-center">{value}</td>
                   );
