@@ -73,7 +73,7 @@ read -rp "Press ENTER after you've filled in .env to continue setup..."
 echo "[7/9] Running Prisma generate + migrate..."
 cd $APP_DIR/backend
 npx prisma generate
-npx prisma migrate deploy
+npx prisma db push
 npm run db:seed || echo "(Seed skipped or already done)"
 
 # 8. Build frontend
@@ -101,7 +101,7 @@ server {
     }
 
     location /api/ {
-        proxy_pass http://127.0.0.1:5000;
+        proxy_pass http://127.0.0.1:5001;
         proxy_http_version 1.1;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
@@ -111,7 +111,7 @@ server {
     }
 
     location /socket.io/ {
-        proxy_pass http://127.0.0.1:5000;
+        proxy_pass http://127.0.0.1:5001;
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
