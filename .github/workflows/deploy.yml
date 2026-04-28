@@ -11,58 +11,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install frontend dependencies
-        working-directory: frontend
-        run: npm ci
-
-      - name: Build frontend
-        working-directory: frontend
-        env:
-          VITE_RAZORPAY_KEY_ID: ${{ secrets.VITE_RAZORPAY_KEY_ID }}
-        run: npm run build
-
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
           script: |
             set -e
-            APP_DIR="/var/www/mobile-store"
+            export NVM_DIR='/root/.nvm'
+            . "$NVM_DIR/nvm.sh"
+            nvm use 20
 
-            echo "==> Pulling latest code..."
-            cd $APP_DIR
+            cd /var/www/mobile-store
             git pull origin main
 
-            echo "==> Installing backend dependencies..."
-            cd $APP_DIR/backend
-            npm ci --omit=dev
+            cd frontend
+            npm install
+            npm run build
 
-            echo "==> Running Prisma migrations..."
+            cd ../backend
+            npm install --omit=dev
             npx prisma generate
-            npx prisma migrate deploy
 
-            echo "==> Copying built frontend..."
-            # Frontend was built in CI and we need to build on server too
-            # OR we can build on server directly:
-            cd $APP_DIR/frontend
-            npm ci
-            VITE_RAZORPAY_KEY_ID=$(grep VITE_RAZORPAY_KEY_ID /var/www/mobile-store/frontend/.env | cut -d= -f2) npm run build
-
-            echo "==> Restarting API..."
-            cd $APP_DIR
-            pm2 restart mobilestore-api || pm2 start ecosystem.config.js
-
-            echo "==> Done ✓"
+            pm2 restart mobilestore-api
+            echo "✅ Deployment complete"
