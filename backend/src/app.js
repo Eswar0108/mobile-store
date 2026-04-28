@@ -31,6 +31,7 @@ const systemRoutes = require('./routes/system');
 const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
+app.set('trust proxy', 1); // Trust Nginx reverse proxy
 const server = http.createServer(app);
 
 // Socket.io
