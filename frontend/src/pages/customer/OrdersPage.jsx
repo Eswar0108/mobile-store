@@ -23,7 +23,7 @@ export default function OrdersPage() {
               <div key={i} className="card animate-pulse h-24 bg-gray-50" />
             ))}
           </div>
-        ) : !data?.orders?.length ? (
+        ) : !data?.data?.length ? (
           <div className="text-center py-16">
             <p className="text-4xl mb-3">📦</p>
             <p className="text-gray-500 mb-4">No orders yet</p>
@@ -31,7 +31,7 @@ export default function OrdersPage() {
           </div>
         ) : (
           <div className="space-y-3">
-            {data.orders.map((order) => (
+            {data.data.map((order) => (
               <Link key={order.id} to={`/orders/${order.id}`} className="card block hover:border-primary-200 border border-transparent transition-colors">
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -47,8 +47,8 @@ export default function OrdersPage() {
                 </div>
                 {order.items?.slice(0, 2).map((item) => (
                   <div key={item.id} className="flex items-center gap-2 mt-2">
-                    {item.product?.primaryImage && (
-                      <img src={item.product.primaryImage} alt={item.product.name} className="w-8 h-8 object-contain rounded" />
+                    {item.product?.images?.[0]?.url && (
+                      <img src={item.product.images[0].url} alt={item.product.name} className="w-8 h-8 object-contain rounded" />
                     )}
                     <p className="text-xs text-gray-600 truncate">{item.product?.name}</p>
                   </div>

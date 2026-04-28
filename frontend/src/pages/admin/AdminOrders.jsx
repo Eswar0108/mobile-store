@@ -54,7 +54,7 @@ export default function AdminOrders() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {data?.orders?.map((order) => (
+                {data?.data?.map((order) => (
                   <tr key={order.id} className="hover:bg-gray-50">
                     <td className="p-3 font-mono text-xs text-gray-500">#{order.id.slice(-8).toUpperCase()}</td>
                     <td className="p-3">
@@ -76,11 +76,11 @@ export default function AdminOrders() {
                 ))}
               </tbody>
             </table>
-            {data?.totalPages > 1 && (
+            {data?.pagination?.totalPages > 1 && (
               <div className="flex justify-center gap-2 p-4 border-t">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="btn-secondary text-sm py-1 px-3 disabled:opacity-50">←</button>
-                <span className="text-sm text-gray-600 py-1 px-2">Page {page} of {data.totalPages}</span>
-                <button onClick={() => setPage(p => Math.min(data.totalPages, p + 1))} disabled={page === data.totalPages} className="btn-secondary text-sm py-1 px-3 disabled:opacity-50">→</button>
+                <span className="text-sm text-gray-600 py-1 px-2">Page {page} of {data.pagination.totalPages}</span>
+                <button onClick={() => setPage(p => Math.min(data.pagination.totalPages, p + 1))} disabled={page === data.pagination.totalPages} className="btn-secondary text-sm py-1 px-3 disabled:opacity-50">→</button>
               </div>
             )}
           </div>

@@ -82,7 +82,7 @@ export default function AdminBanners() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {data?.banners?.map((banner) => (
+          {(Array.isArray(data) ? data : []).map((banner) => (
             <div key={banner.id} className="card">
               {banner.imageUrl && <img src={banner.imageUrl} alt={banner.title} className="w-full h-32 object-cover rounded-lg mb-3" />}
               <p className="font-bold text-gray-900">{banner.title}</p>

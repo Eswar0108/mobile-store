@@ -36,7 +36,7 @@ export default function AdminAuditLogs() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {data?.logs?.map((log) => (
+                {data?.data?.map((log) => (
                   <tr key={log.id} className="hover:bg-gray-50">
                     <td className="p-3 text-xs text-gray-400 whitespace-nowrap">{formatDateTime(log.createdAt)}</td>
                     <td className="p-3">
@@ -50,11 +50,11 @@ export default function AdminAuditLogs() {
                 ))}
               </tbody>
             </table>
-            {data?.totalPages > 1 && (
+            {data?.pagination?.totalPages > 1 && (
               <div className="flex justify-center gap-2 p-4 border-t">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="btn-secondary text-sm py-1 px-3 disabled:opacity-50">←</button>
-                <span className="text-sm text-gray-600 py-1 px-2">Page {page} of {data.totalPages}</span>
-                <button onClick={() => setPage(p => Math.min(data.totalPages, p + 1))} disabled={page === data.totalPages} className="btn-secondary text-sm py-1 px-3 disabled:opacity-50">→</button>
+                <span className="text-sm text-gray-600 py-1 px-2">Page {page} of {data.pagination.totalPages}</span>
+                <button onClick={() => setPage(p => Math.min(data.pagination.totalPages, p + 1))} disabled={page === data.pagination.totalPages} className="btn-secondary text-sm py-1 px-3 disabled:opacity-50">→</button>
               </div>
             )}
           </div>

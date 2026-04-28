@@ -108,7 +108,7 @@ export default function AdminCoupons() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {data?.coupons?.map((coupon) => (
+              {data?.data?.map((coupon) => (
                 <tr key={coupon.id} className="hover:bg-gray-50">
                   <td className="p-3 font-mono font-semibold text-gray-900">{coupon.code}</td>
                   <td className="p-3 text-gray-600">{coupon.discountType}</td>

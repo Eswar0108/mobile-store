@@ -71,15 +71,15 @@ export default function AdminOrderDetail() {
           <h2 className="font-bold text-gray-900 mb-2">Items</h2>
           {order.items.map((item) => (
             <div key={item.id} className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0">
-              {item.product?.primaryImage && (
-                <img src={item.product.primaryImage} alt="" className="w-12 h-12 object-contain rounded bg-gray-50" />
+              {item.product?.images?.[0]?.url && (
+                <img src={item.product.images[0].url} alt="" className="w-12 h-12 object-contain rounded bg-gray-50" />
               )}
               <div className="flex-1">
                 <p className="text-sm font-medium">{item.product?.name}</p>
                 {item.colorVariant && <p className="text-xs text-gray-400">Color: {item.colorVariant}</p>}
-                <p className="text-xs text-gray-500">Qty: {item.quantity} × {formatCurrency(item.price)}</p>
+                <p className="text-xs text-gray-500">Qty: {item.quantity} × {formatCurrency(item.unitPrice)}</p>
               </div>
-              <p className="font-semibold">{formatCurrency(item.price * item.quantity)}</p>
+              <p className="font-semibold">{formatCurrency(item.unitPrice * item.quantity)}</p>
             </div>
           ))}
           <div className="pt-2 space-y-1 text-sm">

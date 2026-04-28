@@ -30,7 +30,7 @@ export default function HelpArticlePage() {
         <p className="text-xs text-gray-400 mb-6">Updated {formatDate(article.updatedAt)}</p>
 
         <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed whitespace-pre-line">
-          {article.content}
+          {article.body}
         </div>
 
         <div className="mt-8 pt-6 border-t">

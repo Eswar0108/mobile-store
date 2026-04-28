@@ -5,7 +5,7 @@ import api from '../../lib/api';
 import { formatDate } from '../../lib/utils';
 import toast from 'react-hot-toast';
 
-const EMPTY_ARTICLE = { title: '', category: '', content: '', published: true };
+const EMPTY_ARTICLE = { title: '', category: '', body: '', isPublished: true };
 
 export default function AdminHelp() {
   const queryClient = useQueryClient();
@@ -13,7 +13,7 @@ export default function AdminHelp() {
   const [form, setForm] = useState(EMPTY_ARTICLE);
   const [editId, setEditId] = useState(null);
 
-  const { data } = useQuery({ queryKey: ['admin-help'], queryFn: () => api.get('/help/admin').then((r) => r.data) });
+  const { data } = useQuery({ queryKey: ['admin-help'], queryFn: () => api.get('/help/admin/all').then((r) => r.data) });
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
 
@@ -50,9 +50,9 @@ export default function AdminHelp() {
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Content *</label>
-              <textarea value={form.content} onChange={set('content')} rows={8} className="input-field w-full text-sm font-mono" />
+              <textarea value={form.body} onChange={set('body')} rows={8} className="input-field w-full text-sm font-mono" />
             </div>
-            <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.published} onChange={set('published')} /> Published</label>
+            <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.isPublished} onChange={set('isPublished')} /> Published</label>
             <div className="flex gap-2">
               <button onClick={() => mutation.mutate()} disabled={mutation.isPending} className="btn-primary text-sm disabled:opacity-50">Save</button>
               <button onClick={() => setShowForm(false)} className="btn-secondary text-sm">Cancel</button>
@@ -73,7 +73,7 @@ export default function AdminHelp() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {data?.articles?.map((article) => (
+              {(data || []).map((article) => (
                 <tr key={article.id} className="hover:bg-gray-50">
                   <td className="p-3 text-gray-900">{article.title}</td>
                   <td className="p-3 text-gray-500">{article.category}</td>
@@ -82,7 +82,7 @@ export default function AdminHelp() {
                   <td className="p-3 text-xs text-gray-400">{formatDate(article.updatedAt)}</td>
                   <td className="p-3">
                     <div className="flex gap-2">
-                      <button onClick={() => { setForm({ title: article.title, category: article.category, content: article.content, published: article.published }); setEditId(article.id); setShowForm(true); }}
+                      <button onClick={() => { setForm({ title: article.title, category: article.category, body: article.body, isPublished: article.isPublished }); setEditId(article.id); setShowForm(true); }}
                         className="text-xs text-primary-600 hover:underline">Edit</button>
                       <button onClick={() => deleteMutation.mutate(article.id)} className="text-xs text-red-500 hover:underline">Delete</button>
                     </div>

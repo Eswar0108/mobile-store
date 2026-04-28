@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import api from '../../lib/api';
@@ -10,9 +10,10 @@ const RETURN_REASONS = ['Defective product', 'Wrong item delivered', 'Not as des
 export default function ReturnRequestPage() {
   const { id: orderId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [reason, setReason] = useState('');
   const [description, setDescription] = useState('');
-  const [orderItemId, setOrderItemId] = useState('');
+  const orderItemId = searchParams.get('itemId') || '';
 
   const mutation = useMutation({
     mutationFn: (formData) => api.post('/returns', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
@@ -25,8 +26,13 @@ export default function ReturnRequestPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!orderItemId) {
+      toast.error('Please click Return on a specific item from the order details page.');
+      return;
+    }
     const fd = new FormData(e.target);
     fd.append('orderId', orderId);
+    fd.append('orderItemId', orderItemId);
     mutation.mutate(fd);
   };
 

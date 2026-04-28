@@ -42,12 +42,12 @@ export default function AdminReturns() {
         </div>
 
         <div className="space-y-3">
-          {data?.returns?.map((ret) => (
+          {data?.data?.map((ret) => (
             <div key={ret.id} className="card">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-sm font-semibold text-gray-900">{ret.user?.name}</p>
-                  <p className="text-xs text-gray-400">{ret.orderItem?.product?.name} · {formatDate(ret.createdAt)}</p>
+                  <p className="text-xs text-gray-400">{ret.product?.name} · {formatDate(ret.createdAt)}</p>
                   <p className="text-sm text-gray-700 mt-1"><strong>Reason:</strong> {ret.reason}</p>
                   {ret.description && <p className="text-sm text-gray-600">{ret.description}</p>}
                 </div>
@@ -66,7 +66,7 @@ export default function AdminReturns() {
               </div>
             </div>
           ))}
-          {data?.returns?.length === 0 && <p className="text-center text-gray-400 py-8">No returns found</p>}
+          {data?.data?.length === 0 && <p className="text-center text-gray-400 py-8">No returns found</p>}
         </div>
       </div>
     </>

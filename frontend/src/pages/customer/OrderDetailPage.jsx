@@ -50,8 +50,8 @@ export default function OrderDetailPage() {
           <h2 className="font-bold text-gray-900">Items</h2>
           {order.items.map((item) => (
             <div key={item.id} className="flex items-center gap-3">
-              {item.product?.primaryImage && (
-                <img src={item.product.primaryImage} alt={item.product.name} className="w-14 h-14 object-contain rounded-lg bg-gray-50" />
+              {item.product?.images?.[0]?.url && (
+                <img src={item.product.images[0].url} alt={item.product.name} className="w-14 h-14 object-contain rounded-lg bg-gray-50" />
               )}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-gray-900 truncate">{item.product?.name}</p>
@@ -59,11 +59,11 @@ export default function OrderDetailPage() {
                 <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
               </div>
               <div className="text-right">
-                <p className="text-sm font-bold text-gray-900">{formatCurrency(item.price * item.quantity)}</p>
-                <p className="text-xs text-gray-400">{formatCurrency(item.price)} each</p>
+                <p className="text-sm font-bold text-gray-900">{formatCurrency(item.unitPrice * item.quantity)}</p>
+                <p className="text-xs text-gray-400">{formatCurrency(item.unitPrice)} each</p>
               </div>
               {order.status === 'DELIVERED' && (
-                <Link to={`/orders/${order.id}/return`} className="text-xs text-primary-600 hover:underline ml-2">Return</Link>
+                <Link to={`/orders/${order.id}/return?itemId=${item.id}`} className="text-xs text-primary-600 hover:underline ml-2">Return</Link>
               )}
             </div>
           ))}

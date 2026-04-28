@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { useAuthStore } from '../../store/authStore';
+import { useCartStore } from '../../store/cartStore';
 import api from '../../lib/api';
 import toast from 'react-hot-toast';
 
@@ -18,6 +19,12 @@ export default function RegisterPage() {
     },
     onSuccess: ({ data }) => {
       setAuth(data.user, data.accessToken);
+      const cartItems = useCartStore.getState().items;
+      if (cartItems.length > 0) {
+        api.post('/cart/merge', {
+          items: cartItems.map((i) => ({ productId: i.productId, quantity: i.quantity, colorVariant: i.colorVariant })),
+        }).catch(() => {});
+      }
       toast.success('Account created! Welcome 🎉');
       navigate('/');
     },
