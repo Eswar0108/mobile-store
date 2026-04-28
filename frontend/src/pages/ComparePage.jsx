@@ -40,7 +40,7 @@ export default function ComparePage() {
                 <th key={p.id} className="p-3 text-center min-w-48">
                   <div className="relative">
                     <button onClick={() => removeItem(p.id)} className="absolute -top-1 -right-1 text-gray-400 hover:text-red-500 text-xs">✕</button>
-                    <img src={p.primaryImage || 'https://via.placeholder.com/100'} alt={p.name}
+                    <img src={p.primaryImage || 'data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect fill='%23f3f4f6' width='300' height='300'/%3E%3Ctext fill='%239ca3af' font-size='20' font-family='sans-serif' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ENo Image%3C/text%3E%3C/svg%3E'} alt={p.name}
                       className="w-20 h-20 object-contain mx-auto mb-2 rounded-lg bg-gray-50" />
                     <Link to={`/products/${p.slug}`} className="text-sm font-semibold text-gray-900 hover:text-primary-600 block">{p.name}</Link>
                     <p className="text-base font-bold text-primary-600">{formatCurrency(p.discountPrice || p.price)}</p>

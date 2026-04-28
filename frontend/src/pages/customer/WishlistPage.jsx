@@ -51,7 +51,7 @@ export default function WishlistPage() {
                 >✕</button>
                 <Link to={`/products/${product.slug}`}>
                   <div className="aspect-square bg-gray-50 rounded-xl overflow-hidden mb-3">
-                    <img src={product.primaryImage || 'https://via.placeholder.com/200'} alt={product.name}
+                    <img src={product.primaryImage || 'data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect fill='%23f3f4f6' width='300' height='300'/%3E%3Ctext fill='%239ca3af' font-size='20' font-family='sans-serif' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ENo Image%3C/text%3E%3C/svg%3E'} alt={product.name}
                       className="w-full h-full object-contain" />
                   </div>
                   <p className="text-xs text-gray-400">{product.brand}</p>

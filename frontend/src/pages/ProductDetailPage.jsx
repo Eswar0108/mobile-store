@@ -8,6 +8,7 @@ import { useCompareStore } from '../store/compareStore';
 import { useAuthStore } from '../store/authStore';
 import { formatCurrency, formatDate, getStatusColor } from '../lib/utils';
 import toast from 'react-hot-toast';
+import ProductCard from '../components/product/ProductCard';
 
 function StarDisplay({ rating, showCount, count }) {
   return (
@@ -127,7 +128,7 @@ export default function ProductDetailPage() {
           <div>
             <div className="aspect-square bg-gray-50 rounded-2xl overflow-hidden mb-3">
               <img
-                src={images[selectedImage]?.url || 'https://via.placeholder.com/600'}
+                src={images[selectedImage]?.url || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect fill='%23f3f4f6' width='600' height='600'/%3E%3Ctext fill='%239ca3af' font-size='24' font-family='sans-serif' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ENo Image%3C/text%3E%3C/svg%3E"}
                 alt={product.name}
                 className="w-full h-full object-contain"
               />
