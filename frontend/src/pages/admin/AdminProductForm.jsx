@@ -6,7 +6,7 @@ import api from '../../lib/api';
 import toast from 'react-hot-toast';
 
 const INITIAL = {
-  name: '', brand: '', category: '', price: '', discountPrice: '', stockQuantity: '',
+  name: '', brand: '', category: '', price: '', discountPrice: '', stock: '',
   description: '', shortDescription: '', availability: 'PUBLISHED',
 };
 
@@ -15,12 +15,12 @@ export default function AdminProductForm() {
   const navigate = useNavigate();
   const isEdit = !!id;
   const [form, setForm] = useState(INITIAL);
-  const [specs, setSpecs] = useState([{ label: '', value: '' }]);
+  const [specs, setSpecs] = useState([{ key: '', value: '' }]);
   const [imageFiles, setImageFiles] = useState([]);
 
   const { data: existing } = useQuery({
     queryKey: ['admin-product', id],
-    queryFn: () => api.get(`/products/admin/all?id=${id}`).then((r) => r.data.data?.[0]),
+    queryFn: () => api.get(`/products/admin/${id}`).then((r) => r.data),
     enabled: isEdit,
   });
 
@@ -32,12 +32,12 @@ export default function AdminProductForm() {
         category: existing.category || '',
         price: existing.price || '',
         discountPrice: existing.discountPrice || '',
-        stockQuantity: existing.stockQuantity || '',
+        stock: existing.stock || '',
         description: existing.description || '',
         shortDescription: existing.shortDescription || '',
         availability: existing.availability || 'PUBLISHED',
       });
-      if (existing.specs?.length) setSpecs(existing.specs.map(s => ({ label: s.label, value: s.value })));
+      if (existing.specs?.length) setSpecs(existing.specs.map(s => ({ key: s.key, value: s.value })));
     }
   }, [existing]);
 
@@ -45,7 +45,7 @@ export default function AdminProductForm() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const payload = { ...form, specs, price: Number(form.price), discountPrice: form.discountPrice ? Number(form.discountPrice) : null, stockQuantity: Number(form.stockQuantity) };
+      const payload = { ...form, specs, price: Number(form.price), discountPrice: form.discountPrice ? Number(form.discountPrice) : null, stock: Number(form.stock) };
       let product;
       if (isEdit) {
         const res = await api.put(`/products/${id}`, payload);
@@ -69,7 +69,7 @@ export default function AdminProductForm() {
     onError: (err) => toast.error(err.response?.data?.message || 'Error'),
   });
 
-  const addSpec = () => setSpecs((s) => [...s, { label: '', value: '' }]);
+  const addSpec = () => setSpecs((s) => [...s, { key: '', value: '' }]);
   const updateSpec = (idx, field, val) => setSpecs((s) => s.map((sp, i) => i === idx ? { ...sp, [field]: val } : sp));
   const removeSpec = (idx) => setSpecs((s) => s.filter((_, i) => i !== idx));
 
@@ -109,8 +109,8 @@ export default function AdminProductForm() {
               <input type="number" value={form.discountPrice} onChange={set('discountPrice')} className="input-field w-full" placeholder="44999" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Stock Quantity *</label>
-              <input type="number" value={form.stockQuantity} onChange={set('stockQuantity')} className="input-field w-full" placeholder="100" />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Stock *</label>
+              <input type="number" value={form.stock} onChange={set('stock')} className="input-field w-full" placeholder="100" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Availability</label>
@@ -138,7 +138,7 @@ export default function AdminProductForm() {
           </div>
           {specs.map((spec, idx) => (
             <div key={idx} className="flex gap-2 items-center">
-              <input value={spec.label} onChange={(e) => updateSpec(idx, 'label', e.target.value)} placeholder="e.g. RAM" className="input-field flex-1 text-sm" />
+              <input value={spec.key} onChange={(e) => updateSpec(idx, 'key', e.target.value)} placeholder="e.g. RAM" className="input-field flex-1 text-sm" />
               <input value={spec.value} onChange={(e) => updateSpec(idx, 'value', e.target.value)} placeholder="e.g. 12 GB" className="input-field flex-1 text-sm" />
               <button onClick={() => removeSpec(idx)} className="text-gray-400 hover:text-red-500">✕</button>
             </div>

@@ -248,4 +248,14 @@ router.get('/admin/all', authenticate, requireAdmin, asyncHandler(async (req, re
   res.json(paginatedResponse(products, total, page, limit));
 }));
 
+// GET /api/products/admin/:id — single product for admin edit form
+router.get('/admin/:id', authenticate, requireAdmin, asyncHandler(async (req, res) => {
+  const product = await prisma.product.findUnique({
+    where: { id: req.params.id },
+    include: { images: { orderBy: { sortOrder: 'asc' } }, specs: true, colors: true, tags: true },
+  });
+  if (!product) return res.status(404).json({ error: 'Product not found.' });
+  res.json(product);
+}));
+
 module.exports = router;
