@@ -21,11 +21,9 @@ export default function CartPage() {
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState('');
-  const GST_RATE = 0.18;
 
   const subtotal = getSubtotal();
-  const gst = Math.round(subtotal * GST_RATE);
-  const total = getTotal();
+  const { total, gst } = getTotal();
 
   const couponMutation = useMutation({
     mutationFn: (code) => api.post('/coupons/validate', { code, orderAmount: subtotal }),
@@ -58,26 +56,26 @@ export default function CartPage() {
           {/* Items */}
           <div className="flex-1 space-y-3">
             {items.map((item) => (
-              <div key={item.id + item.colorVariant} className="card flex items-center gap-4">
-                <Link to={`/products/${item.slug || '#'}`}>
-                  <img src={item.primaryImage || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect fill='%23f3f4f6' width='300' height='300'/%3E%3C/svg%3E"} alt={item.name}
+              <div key={item.productId + (item.colorVariant || '')} className="card flex items-center gap-4">
+                <Link to={`/products/${item.product?.slug || '#'}`}>
+                  <img src={item.product?.primaryImage || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect fill='%23f3f4f6' width='300' height='300'/%3E%3C/svg%3E"} alt={item.product?.name}
                     className="w-16 h-16 md:w-20 md:h-20 object-contain rounded-lg bg-gray-50 flex-shrink-0" />
                 </Link>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-gray-900 text-sm truncate">{item.name}</p>
+                  <p className="font-semibold text-gray-900 text-sm truncate">{item.product?.name}</p>
                   {item.colorVariant && <p className="text-xs text-gray-400">Color: {item.colorVariant}</p>}
-                  <p className="text-sm font-bold text-primary-600 mt-1">{formatCurrency(item.price)}</p>
+                  <p className="text-sm font-bold text-primary-600 mt-1">{formatCurrency(item.unitPrice)}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="flex items-center border border-gray-200 rounded-lg">
-                    <button onClick={() => { if (item.quantity === 1) removeItem(item.id); else updateQuantity(item.id, item.quantity - 1); }}
+                    <button onClick={() => { if (item.quantity === 1) removeItem(item.productId, item.colorVariant); else updateQuantity(item.productId, item.colorVariant, item.quantity - 1); }}
                       className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-50 text-lg">−</button>
                     <span className="w-6 text-center text-sm">{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    <button onClick={() => updateQuantity(item.productId, item.colorVariant, item.quantity + 1)}
                       className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-50 text-lg">+</button>
                   </div>
-                  <p className="text-sm font-bold text-gray-900 w-20 text-right">{formatCurrency(item.price * item.quantity)}</p>
-                  <button onClick={() => removeItem(item.id)} className="text-gray-300 hover:text-red-500 ml-1">
+                  <p className="text-sm font-bold text-gray-900 w-20 text-right">{formatCurrency(item.unitPrice * item.quantity)}</p>
+                  <button onClick={() => removeItem(item.productId, item.colorVariant)} className="text-gray-300 hover:text-red-500 ml-1">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>

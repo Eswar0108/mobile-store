@@ -64,13 +64,17 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     if (!product) return;
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.discountPrice || product.price,
-      primaryImage: product.primaryImage,
-      colorVariant: selectedColor,
-    });
+    addToCart(
+      {
+        id: product.id,
+        name: product.name,
+        price: product.discountPrice || product.price,
+        primaryImage: product.primaryImage,
+        slug: product.slug,
+      },
+      1,
+      selectedColor
+    );
     toast.success('Added to cart!');
   };
 
