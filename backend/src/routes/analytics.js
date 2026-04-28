@@ -22,16 +22,19 @@ router.get('/revenue', authenticate, requireSalesperson, asyncHandler(async (req
 
   const totalRevenue = orders.reduce((s, o) => s + parseFloat(o.totalAmount), 0);
   const totalOrders = orders.length;
-  const aov = totalOrders ? (totalRevenue / totalOrders).toFixed(2) : 0;
+  const avgOrderValue = totalOrders ? totalRevenue / totalOrders : 0;
 
-  // Daily revenue
-  const daily = orders.reduce((acc, o) => {
+  // Daily revenue array
+  const dailyMap = orders.reduce((acc, o) => {
     const date = o.createdAt.toISOString().split('T')[0];
     acc[date] = (acc[date] || 0) + parseFloat(o.totalAmount);
     return acc;
   }, {});
+  const data = Object.entries(dailyMap)
+    .map(([date, revenue]) => ({ date, revenue }))
+    .sort((a, b) => a.date.localeCompare(b.date));
 
-  res.json({ totalRevenue, totalOrders, aov, daily });
+  res.json({ summary: { totalRevenue, totalOrders, avgOrderValue }, data });
 }));
 
 // GET /api/analytics/top-products
@@ -53,7 +56,8 @@ router.get('/top-products', authenticate, requireSalesperson, asyncHandler(async
   }, {});
 
   const sorted = Object.values(aggregated).sort((a, b) => b.units - a.units).slice(0, 10);
-  res.json(sorted);
+  const products = sorted.map((p) => ({ name: p.product?.name || 'Unknown', revenue: p.revenue, units: p.units }));
+  res.json({ products });
 }));
 
 // GET /api/analytics/orders (conversion funnel data)
@@ -69,15 +73,29 @@ router.get('/orders', authenticate, requireSalesperson, asyncHandler(async (req,
   const cartItems = await prisma.cartItem.count();
   const wishlistItems = await prisma.wishlistItem.count();
 
-  res.json({ statusCounts, cartItems, wishlistItems });
+  const byStatus = statusCounts.map((s) => ({ status: s.status, count: s._count.status }));
+  res.json({ byStatus, cartItems, wishlistItems });
 }));
 
 // GET /api/analytics/customers
 router.get('/customers', authenticate, requireSalesperson, asyncHandler(async (req, res) => {
   const { gte, lte } = dateFilter(req);
 
-  const newUsers = await prisma.user.count({ where: { role: 'CUSTOMER', createdAt: { gte, lte } } });
+  const newCustomers = await prisma.user.count({ where: { role: 'CUSTOMER', createdAt: { gte, lte } } });
   const totalCustomers = await prisma.user.count({ where: { role: 'CUSTOMER' } });
+
+  const newCustomerRows = await prisma.user.findMany({
+    where: { role: 'CUSTOMER', createdAt: { gte, lte } },
+    select: { createdAt: true },
+  });
+  const dailyMap = newCustomerRows.reduce((acc, u) => {
+    const date = u.createdAt.toISOString().split('T')[0];
+    acc[date] = (acc[date] || 0) + 1;
+    return acc;
+  }, {});
+  const data = Object.entries(dailyMap)
+    .map(([date, count]) => ({ date, count }))
+    .sort((a, b) => a.date.localeCompare(b.date));
 
   const byState = await prisma.address.groupBy({
     by: ['state'],
@@ -93,7 +111,29 @@ router.get('/customers', authenticate, requireSalesperson, asyncHandler(async (r
     take: 10,
   });
 
-  res.json({ newUsers, totalCustomers, byState, topCities });
+  res.json({ summary: { newCustomers, totalCustomers }, data, byState, topCities });
+}));
+
+// GET /api/analytics/categories
+router.get('/categories', authenticate, requireSalesperson, asyncHandler(async (req, res) => {
+  const { gte, lte } = dateFilter(req);
+
+  const items = await prisma.orderItem.findMany({
+    where: { order: { createdAt: { gte, lte }, status: { not: 'CANCELLED' } } },
+    select: { quantity: true, unitPrice: true, product: { select: { category: true } } },
+  });
+
+  const map = {};
+  for (const item of items) {
+    const cat = item.product?.category || 'Other';
+    map[cat] = (map[cat] || 0) + Number(item.unitPrice) * item.quantity;
+  }
+
+  const data = Object.entries(map)
+    .map(([category, revenue]) => ({ category, revenue }))
+    .sort((a, b) => b.revenue - a.revenue);
+
+  res.json({ data });
 }));
 
 // GET /api/analytics/inventory

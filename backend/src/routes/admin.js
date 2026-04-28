@@ -105,7 +105,7 @@ router.patch('/users/:id', authenticate, requireAdmin, asyncHandler(async (req, 
 router.get('/inventory', authenticate, requireAdmin, asyncHandler(async (req, res) => {
   const products = await prisma.product.findMany({
     orderBy: { stock: 'asc' },
-    select: { id: true, name: true, brand: true, category: true, stock: true, lowStockThreshold: true, availability: true },
+    select: { id: true, name: true, brand: true, category: true, price: true, discountPrice: true, stock: true, lowStockThreshold: true, availability: true },
   });
   res.json(products);
 }));

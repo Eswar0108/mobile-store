@@ -31,11 +31,11 @@ router.post('/', authenticate, asyncHandler(async (req, res) => {
   if (!product || product.availability !== 'PUBLISHED') return res.status(404).json({ error: 'Product not found.' });
   if (product.stock <= 0) return res.status(400).json({ error: 'Product is out of stock.' });
 
-  const item = await prisma.cartItem.upsert({
-    where: { userId_productId_colorVariant: { userId: req.user.id, productId, colorVariant: colorVariant || null } },
-    create: { userId: req.user.id, productId, quantity: parseInt(quantity), colorVariant: colorVariant || null },
-    update: { quantity: { increment: parseInt(quantity) } },
-  });
+  const cv = colorVariant || null;
+  const existing = await prisma.cartItem.findFirst({ where: { userId: req.user.id, productId, colorVariant: cv } });
+  const item = existing
+    ? await prisma.cartItem.update({ where: { id: existing.id }, data: { quantity: { increment: parseInt(quantity) } } })
+    : await prisma.cartItem.create({ data: { userId: req.user.id, productId, quantity: parseInt(quantity), colorVariant: cv } });
   res.status(201).json(item);
 }));
 
@@ -68,11 +68,13 @@ router.post('/merge', authenticate, asyncHandler(async (req, res) => {
     const product = await prisma.product.findUnique({ where: { id: item.productId } });
     if (!product || product.availability !== 'PUBLISHED') continue;
 
-    await prisma.cartItem.upsert({
-      where: { userId_productId_colorVariant: { userId: req.user.id, productId: item.productId, colorVariant: item.colorVariant || null } },
-      create: { userId: req.user.id, productId: item.productId, quantity: item.quantity || 1, colorVariant: item.colorVariant || null },
-      update: { quantity: { increment: item.quantity || 1 } },
-    });
+    const cv = item.colorVariant || null;
+    const existing = await prisma.cartItem.findFirst({ where: { userId: req.user.id, productId: item.productId, colorVariant: cv } });
+    if (existing) {
+      await prisma.cartItem.update({ where: { id: existing.id }, data: { quantity: { increment: item.quantity || 1 } } });
+    } else {
+      await prisma.cartItem.create({ data: { userId: req.user.id, productId: item.productId, quantity: item.quantity || 1, colorVariant: cv } });
+    }
   }
 
   const cart = await prisma.cartItem.findMany({

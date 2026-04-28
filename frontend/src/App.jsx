@@ -71,7 +71,7 @@ export default function App() {
         <Route path="refund-policy" element={<RefundPolicyPage />} />
 
         {/* Customer */}
-        <Route path="cart" element={<ProtectedRoute roles={['CUSTOMER', 'ADMIN']}><CartPage /></ProtectedRoute>} />
+        <Route path="cart" element={<CartPage />} />
         <Route path="wishlist" element={<ProtectedRoute roles={['CUSTOMER', 'ADMIN']}><WishlistPage /></ProtectedRoute>} />
         <Route path="checkout" element={<ProtectedRoute roles={['CUSTOMER', 'ADMIN']}><CheckoutPage /></ProtectedRoute>} />
         <Route path="orders" element={<ProtectedRoute roles={['CUSTOMER', 'ADMIN']}><OrdersPage /></ProtectedRoute>} />

@@ -112,7 +112,7 @@ export default function AdminOrderDetail() {
                   <div>
                     <p className="text-sm font-medium">{h.status.replace(/_/g, ' ')}</p>
                     {h.comment && <p className="text-xs text-gray-500">{h.comment}</p>}
-                    <p className="text-xs text-gray-400">{formatDateTime(h.createdAt)}</p>
+                    <p className="text-xs text-gray-400">{formatDateTime(h.timestamp || h.createdAt)}</p>
                   </div>
                 </div>
               ))}

@@ -112,7 +112,7 @@ export default function AdminCoupons() {
                 <tr key={coupon.id} className="hover:bg-gray-50">
                   <td className="p-3 font-mono font-semibold text-gray-900">{coupon.code}</td>
                   <td className="p-3 text-gray-600">{coupon.type}</td>
-                  <td className="p-3">{coupon.type === 'PERCENTAGE' ? `${coupon.value}%` : `₹${coupon.value}`}</td>
+                  <td className="p-3">{['PERCENTAGE', 'FIRST_ORDER', 'PRODUCT_SPECIFIC', 'CATEGORY_SPECIFIC'].includes(coupon.type) ? `${coupon.value}%` : `₹${coupon.value}`}</td>
                   <td className="p-3 text-gray-600">{coupon.usageCount}{coupon.usageLimit ? `/${coupon.usageLimit}` : ''}</td>
                   <td className="p-3 text-gray-500 text-xs">{coupon.expiryDate ? formatDate(coupon.expiryDate) : '—'}</td>
                   <td className="p-3"><span className={`badge text-xs ${coupon.isActive ? 'badge-green' : 'badge-gray'}`}>{coupon.isActive ? 'Active' : 'Inactive'}</span></td>
