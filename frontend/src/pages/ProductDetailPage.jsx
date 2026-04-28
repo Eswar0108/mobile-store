@@ -178,15 +178,16 @@ export default function ProductDetailPage() {
             {product.colors?.length > 0 && (
               <div>
                 <p className="text-sm font-medium text-gray-700 mb-2">Color: <span className="font-bold">{selectedColor || 'Select'}</span></p>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   {product.colors.map((c) => (
                     <button
                       key={c.id}
-                      onClick={() => setSelectedColor(c.name)}
-                      title={c.name}
-                      className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 ${selectedColor === c.name ? 'border-primary-600 scale-110' : 'border-gray-200'}`}
-                      style={{ backgroundColor: c.hexCode }}
-                    />
+                      onClick={() => setSelectedColor(c.colorName)}
+                      title={c.colorName}
+                      className={`px-3 py-1 rounded-full border-2 text-sm transition-all ${selectedColor === c.colorName ? 'border-primary-600 bg-primary-50 text-primary-700 font-medium' : 'border-gray-200 text-gray-600 hover:border-gray-400'}`}
+                    >
+                      {c.colorName}
+                    </button>
                   ))}
                 </div>
               </div>

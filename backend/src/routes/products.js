@@ -107,7 +107,7 @@ router.get('/:slug', asyncHandler(async (req, res) => {
     select: productSelect,
   });
 
-  res.json({ ...product, avgRating, reviewCount: product.reviews.length, related });
+  res.json({ ...product, avgRating, reviewCount: product.reviews.length, primaryImage: product.images[0]?.url || null, related });
 }));
 
 // POST /api/products (admin)
