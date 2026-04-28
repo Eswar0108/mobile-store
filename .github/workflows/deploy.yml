@@ -33,7 +33,7 @@ jobs:
 
             cd ../backend
             npm install --omit=dev --legacy-peer-deps
-            npx prisma generate
+            ./node_modules/.bin/prisma generate
 
             pm2 restart mobilestore-api
             echo "✅ Deployment complete"
