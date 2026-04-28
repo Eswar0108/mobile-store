@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import api from '../../lib/api';
@@ -6,6 +6,8 @@ import { formatCurrency, formatDateTime, getStatusColor, ORDER_STATUS_STEPS } fr
 
 export default function OrderDetailPage() {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const isSuccess = searchParams.get('success') === '1';
   const { data: order, isLoading } = useQuery({
     queryKey: ['order', id],
     queryFn: () => api.get(`/orders/${id}`).then((r) => r.data),
@@ -20,6 +22,16 @@ export default function OrderDetailPage() {
     <>
       <Helmet><title>Order #{id.slice(-8).toUpperCase()} — MobileStore</title></Helmet>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+        {/* Success banner */}
+        {isSuccess && (
+          <div className="rounded-xl bg-green-50 border border-green-200 p-4 flex items-center gap-3">
+            <span className="text-2xl">🎉</span>
+            <div>
+              <p className="font-semibold text-green-800">Order placed successfully!</p>
+              <p className="text-sm text-green-600">You'll receive a confirmation email shortly.</p>
+            </div>
+          </div>
+        )}
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>

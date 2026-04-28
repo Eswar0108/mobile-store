@@ -105,15 +105,19 @@ export default function CheckoutPage() {
         name: 'MobileStore',
         order_id: rpOrder.razorpayOrderId,
         handler: async (response) => {
-          await api.post('/payments/verify', {
-            orderId: order.id,
-            razorpayOrderId: response.razorpay_order_id,
-            razorpayPaymentId: response.razorpay_payment_id,
-            razorpaySignature: response.razorpay_signature,
-          });
-          clearCart();
-          clearCoupon();
-          navigate(`/orders/${order.id}?success=1`);
+          try {
+            await api.post('/payments/verify', {
+              orderId: order.id,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+            });
+            clearCart();
+            clearCoupon();
+            navigate(`/orders/${order.id}?success=1`);
+          } catch (err) {
+            toast.error(err.response?.data?.error || 'Payment verification failed. Contact support.');
+          }
         },
         prefill: { name: order.shippingAddress?.name, contact: order.shippingAddress?.phone },
         theme: { color: '#2563eb' },
