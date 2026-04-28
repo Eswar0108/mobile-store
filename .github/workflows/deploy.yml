@@ -32,7 +32,7 @@ jobs:
             npm run build
 
             cd ../backend
-            npm install --omit=dev
+            npm install --omit=dev --legacy-peer-deps
             npx prisma generate
 
             pm2 restart mobilestore-api
