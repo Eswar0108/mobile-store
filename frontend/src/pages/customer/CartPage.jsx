@@ -26,7 +26,7 @@ export default function CartPage() {
   const { total, gst } = getTotal();
 
   const couponMutation = useMutation({
-    mutationFn: (code) => api.post('/coupons/validate', { code, orderAmount: subtotal }),
+    mutationFn: (code) => api.post('/coupons/validate', { code, cartTotal: subtotal }),
     onSuccess: ({ data }) => {
       setCoupon(data.coupon, data.discountAmount);
       toast.success(`Coupon applied! You save ${formatCurrency(data.discountAmount)}`);

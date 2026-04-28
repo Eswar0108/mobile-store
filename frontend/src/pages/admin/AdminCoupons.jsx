@@ -5,7 +5,7 @@ import api from '../../lib/api';
 import { formatDate } from '../../lib/utils';
 import toast from 'react-hot-toast';
 
-const EMPTY = { code: '', discountType: 'PERCENTAGE', discountValue: '', maxDiscountAmount: '', minOrderValue: '', usageLimit: '', perUserLimit: '', startDate: '', expiresAt: '', isActive: true, scope: 'ALL' };
+const EMPTY = { code: '', type: 'PERCENTAGE', value: '', maxDiscount: '', minOrderValue: '', usageLimit: '', perUserLimit: '', startDate: '', expiryDate: '', isActive: true, scope: 'ALL' };
 
 export default function AdminCoupons() {
   const queryClient = useQueryClient();
@@ -29,7 +29,7 @@ export default function AdminCoupons() {
   });
 
   const openEdit = (coupon) => {
-    setForm({ code: coupon.code, discountType: coupon.discountType, discountValue: coupon.discountValue, maxDiscountAmount: coupon.maxDiscountAmount || '', minOrderValue: coupon.minOrderValue || '', usageLimit: coupon.usageLimit || '', perUserLimit: coupon.perUserLimit || '', startDate: coupon.startDate?.slice(0, 10) || '', expiresAt: coupon.expiresAt?.slice(0, 10) || '', isActive: coupon.isActive, scope: coupon.scope });
+    setForm({ code: coupon.code, type: coupon.type, value: coupon.value, maxDiscount: coupon.maxDiscount || '', minOrderValue: coupon.minOrderValue || '', usageLimit: coupon.usageLimit || '', perUserLimit: coupon.perUserLimit || '', startDate: coupon.startDate?.slice(0, 10) || '', expiryDate: coupon.expiryDate?.slice(0, 10) || '', isActive: coupon.isActive, scope: coupon.scope });
     setEditId(coupon.id);
     setShowForm(true);
   };
@@ -53,7 +53,7 @@ export default function AdminCoupons() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Type</label>
-                <select value={form.discountType} onChange={set('discountType')} className="input-field w-full text-sm">
+                <select value={form.type} onChange={set('type')} className="input-field w-full text-sm">
                   <option value="PERCENTAGE">Percentage</option>
                   <option value="FLAT">Flat Amount</option>
                   <option value="FIRST_ORDER">First Order</option>
@@ -61,11 +61,11 @@ export default function AdminCoupons() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Value *</label>
-                <input type="number" value={form.discountValue} onChange={set('discountValue')} className="input-field w-full text-sm" placeholder={form.discountType === 'PERCENTAGE' ? '20 (%)' : '500 (₹)'} />
+                <input type="number" value={form.value} onChange={set('value')} className="input-field w-full text-sm" placeholder={form.type === 'PERCENTAGE' ? '20 (%)' : '500 (₹)'} />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Max Discount (₹)</label>
-                <input type="number" value={form.maxDiscountAmount} onChange={set('maxDiscountAmount')} className="input-field w-full text-sm" placeholder="2000" />
+                <input type="number" value={form.maxDiscount} onChange={set('maxDiscount')} className="input-field w-full text-sm" placeholder="2000" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Min Order (₹)</label>
@@ -81,7 +81,7 @@ export default function AdminCoupons() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Expiry Date</label>
-                <input type="date" value={form.expiresAt} onChange={set('expiresAt')} className="input-field w-full text-sm" />
+                <input type="date" value={form.expiryDate} onChange={set('expiryDate')} className="input-field w-full text-sm" />
               </div>
             </div>
             <label className="flex items-center gap-2 text-sm">
@@ -111,10 +111,10 @@ export default function AdminCoupons() {
               {data?.data?.map((coupon) => (
                 <tr key={coupon.id} className="hover:bg-gray-50">
                   <td className="p-3 font-mono font-semibold text-gray-900">{coupon.code}</td>
-                  <td className="p-3 text-gray-600">{coupon.discountType}</td>
-                  <td className="p-3">{coupon.discountType === 'PERCENTAGE' ? `${coupon.discountValue}%` : `₹${coupon.discountValue}`}</td>
+                  <td className="p-3 text-gray-600">{coupon.type}</td>
+                  <td className="p-3">{coupon.type === 'PERCENTAGE' ? `${coupon.value}%` : `₹${coupon.value}`}</td>
                   <td className="p-3 text-gray-600">{coupon.usageCount}{coupon.usageLimit ? `/${coupon.usageLimit}` : ''}</td>
-                  <td className="p-3 text-gray-500 text-xs">{coupon.expiresAt ? formatDate(coupon.expiresAt) : '—'}</td>
+                  <td className="p-3 text-gray-500 text-xs">{coupon.expiryDate ? formatDate(coupon.expiryDate) : '—'}</td>
                   <td className="p-3"><span className={`badge text-xs ${coupon.isActive ? 'badge-green' : 'badge-gray'}`}>{coupon.isActive ? 'Active' : 'Inactive'}</span></td>
                   <td className="p-3">
                     <div className="flex gap-2">
