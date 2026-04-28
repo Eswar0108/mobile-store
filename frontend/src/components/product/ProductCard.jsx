@@ -26,8 +26,11 @@ export default function ProductCard({ product }) {
     onError: (err) => toast.error(err.response?.data?.message || 'Error'),
   });
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     addItem({ id: product.id, name: product.name, price: displayPrice, primaryImage: product.primaryImage });
+    if (user) {
+      await api.post('/cart', { productId: product.id, quantity: 1 }).catch(() => {});
+    }
     toast.success('Added to cart');
   };
 

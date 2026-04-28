@@ -62,7 +62,7 @@ export default function ProductDetailPage() {
     onError: (err) => toast.error(err.response?.data?.message || 'Error'),
   });
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!product) return;
     addToCart(
       {
@@ -75,6 +75,9 @@ export default function ProductDetailPage() {
       1,
       selectedColor
     );
+    if (user) {
+      await api.post('/cart', { productId: product.id, quantity: 1, colorVariant: selectedColor || undefined }).catch(() => {});
+    }
     toast.success('Added to cart!');
   };
 
