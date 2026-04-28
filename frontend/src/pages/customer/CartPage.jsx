@@ -60,7 +60,7 @@ export default function CartPage() {
             {items.map((item) => (
               <div key={item.id + item.colorVariant} className="card flex items-center gap-4">
                 <Link to={`/products/${item.slug || '#'}`}>
-                  <img src={item.primaryImage || 'data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect fill='%23f3f4f6' width='300' height='300'/%3E%3Ctext fill='%239ca3af' font-size='20' font-family='sans-serif' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ENo Image%3C/text%3E%3C/svg%3E'} alt={item.name}
+                  <img src={item.primaryImage || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect fill='%23f3f4f6' width='300' height='300'/%3E%3C/svg%3E"} alt={item.name}
                     className="w-16 h-16 md:w-20 md:h-20 object-contain rounded-lg bg-gray-50 flex-shrink-0" />
                 </Link>
                 <div className="flex-1 min-w-0">
