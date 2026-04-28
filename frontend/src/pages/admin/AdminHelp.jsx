@@ -78,7 +78,7 @@ export default function AdminHelp() {
                   <td className="p-3 text-gray-900">{article.title}</td>
                   <td className="p-3 text-gray-500">{article.category}</td>
                   <td className="p-3 text-gray-500 text-xs">{article.helpfulYes}/{article.helpfulNo ? article.helpfulYes + article.helpfulNo : '—'}</td>
-                  <td className="p-3"><span className={`badge text-xs ${article.published ? 'badge-green' : 'badge-gray'}`}>{article.published ? 'Yes' : 'No'}</span></td>
+                  <td className="p-3"><span className={`badge text-xs ${article.isPublished ? 'badge-green' : 'badge-gray'}`}>{article.isPublished ? 'Yes' : 'No'}</span></td>
                   <td className="p-3 text-xs text-gray-400">{formatDate(article.updatedAt)}</td>
                   <td className="p-3">
                     <div className="flex gap-2">

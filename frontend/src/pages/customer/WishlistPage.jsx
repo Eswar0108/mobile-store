@@ -35,7 +35,7 @@ export default function WishlistPage() {
               <div key={i} className="card animate-pulse h-48 bg-gray-50" />
             ))}
           </div>
-        ) : !data?.items?.length ? (
+        ) : !(data || []).length ? (
           <div className="text-center py-16">
             <p className="text-4xl mb-3">♥</p>
             <p className="text-gray-500 mb-4">Your wishlist is empty</p>
@@ -43,7 +43,7 @@ export default function WishlistPage() {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {data.items.map(({ product }) => (
+            {(data || []).map(({ product }) => (
               <div key={product.id} className="card group relative">
                 <button
                   onClick={() => removeMutation.mutate(product.id)}

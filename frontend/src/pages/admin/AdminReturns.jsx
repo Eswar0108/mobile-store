@@ -15,7 +15,7 @@ export default function AdminReturns() {
   });
 
   const actionMutation = useMutation({
-    mutationFn: ({ id, action, adminNotes }) => api.patch(`/returns/admin/${id}`, { action, adminNotes }),
+    mutationFn: ({ id, action }) => api.patch(`/returns/admin/${id}`, { status: action === 'approve' ? 'APPROVED' : 'REJECTED' }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['admin-returns'] }); toast.success('Return updated'); },
     onError: (err) => toast.error(err.response?.data?.message || 'Error'),
   });
