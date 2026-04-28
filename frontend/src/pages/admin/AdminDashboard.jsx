@@ -28,7 +28,8 @@ export default function AdminDashboard() {
 
   if (isLoading) return <div className="grid grid-cols-2 md:grid-cols-4 gap-4">{Array.from({ length: 8 }).map((_, i) => <div key={i} className="card animate-pulse h-24 bg-gray-50" />)}</div>;
 
-  const kpis = data?.kpis || {};
+  const revenue = data?.revenue || {};
+  const orders = data?.orders || {};
 
   return (
     <>
@@ -37,14 +38,14 @@ export default function AdminDashboard() {
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <KPICard label="Total Revenue" value={formatCurrency(kpis.totalRevenue || 0)} icon="💰" sub="All time" />
-          <KPICard label="Today's Revenue" value={formatCurrency(kpis.todayRevenue || 0)} icon="📈" sub="Today" />
-          <KPICard label="Total Orders" value={kpis.totalOrders || 0} icon="📦" />
-          <KPICard label="Pending Orders" value={kpis.pendingOrders || 0} icon="⏳" />
-          <KPICard label="Total Products" value={kpis.totalProducts || 0} icon="📱" />
-          <KPICard label="Low Stock" value={kpis.lowStockProducts || 0} icon="⚠️" />
-          <KPICard label="Total Customers" value={kpis.totalCustomers || 0} icon="👥" />
-          <KPICard label="Pending Returns" value={kpis.pendingReturns || 0} icon="↩️" />
+          <KPICard label="Month Revenue" value={formatCurrency(revenue.month || 0)} icon="💰" sub="Last 30 days" />
+          <KPICard label="Today's Revenue" value={formatCurrency(revenue.today || 0)} icon="📈" sub="Today" />
+          <KPICard label="Month Orders" value={orders.month || 0} icon="📦" sub="Last 30 days" />
+          <KPICard label="Pending Orders" value={orders.pending || 0} icon="⏳" />
+          <KPICard label="Week Orders" value={orders.week || 0} icon="📱" sub="Last 7 days" />
+          <KPICard label="Low Stock" value={data?.lowStockCount || 0} icon="⚠️" />
+          <KPICard label="Pending Reviews" value={data?.pendingReviews || 0} icon="⭐" />
+          <KPICard label="Open Returns" value={data?.openReturns || 0} icon="↩️" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -71,13 +72,11 @@ export default function AdminDashboard() {
           <div className="card">
             <h2 className="font-bold text-gray-900 mb-4">Low Stock Alert</h2>
             <div className="space-y-2">
-              {data?.lowStockItems?.slice(0, 5).map((product) => (
-                <div key={product.id} className="flex items-center justify-between py-2 border-b border-gray-50">
-                  <p className="text-sm text-gray-900 truncate flex-1">{product.name}</p>
-                  <span className="badge badge-yellow text-xs ml-2">{product.stockQuantity} left</span>
-                </div>
-              ))}
-              {!data?.lowStockItems?.length && <p className="text-sm text-gray-400 text-center py-4">All products stocked well ✓</p>}
+              {(data?.lowStockCount || 0) > 0 ? (
+                <p className="text-sm text-amber-600 text-center py-4">⚠️ {data.lowStockCount} product(s) running low</p>
+              ) : (
+                <p className="text-sm text-gray-400 text-center py-4">All products stocked well ✓</p>
+              )}
             </div>
             <Link to="/admin/inventory" className="block text-center text-xs text-primary-600 mt-3 hover:underline">Manage inventory →</Link>
           </div>

@@ -17,7 +17,7 @@ export default function AdminInventory() {
 
   const bulkMutation = useMutation({
     mutationFn: () => api.post('/admin/inventory/bulk-update', {
-      updates: Object.entries(updates).map(([id, qty]) => ({ id, stockQuantity: Number(qty) })),
+      updates: Object.entries(updates).map(([id, qty]) => ({ productId: id, stock: Number(qty) })),
     }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-inventory'] });
@@ -59,8 +59,8 @@ export default function AdminInventory() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {data?.products?.map((product) => (
-                  <tr key={product.id} className={`hover:bg-gray-50 ${product.stockQuantity <= 5 ? 'bg-red-50' : ''}`}>
+                {(Array.isArray(data) ? data : data?.products || []).map((product) => (
+                  <tr key={product.id} className={`hover:bg-gray-50 ${product.stock <= 5 ? 'bg-red-50' : ''}`}>
                     <td className="p-3">
                       <p className="font-medium text-gray-900">{product.name}</p>
                       <p className="text-xs text-gray-400">{product.brand}</p>
@@ -68,15 +68,15 @@ export default function AdminInventory() {
                     <td className="p-3 text-gray-600">{product.category}</td>
                     <td className="p-3 font-semibold">{formatCurrency(product.discountPrice || product.price)}</td>
                     <td className="p-3">
-                      <span className={`badge text-xs ${product.stockQuantity === 0 ? 'badge-red' : product.stockQuantity <= 5 ? 'badge-yellow' : 'badge-green'}`}>
-                        {product.stockQuantity}
+                      <span className={`badge text-xs ${product.stock === 0 ? 'badge-red' : product.stock <= 5 ? 'badge-yellow' : 'badge-green'}`}>
+                        {product.stock}
                       </span>
                     </td>
                     <td className="p-3">
                       <input
                         type="number"
                         min="0"
-                        placeholder={product.stockQuantity}
+                        placeholder={product.stock}
                         value={updates[product.id] ?? ''}
                         onChange={(e) => setUpdates((u) => ({ ...u, [product.id]: e.target.value }))}
                         className="input-field text-sm w-24 py-1"

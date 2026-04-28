@@ -69,8 +69,8 @@ export default function AdminProducts() {
                       {product.discountPrice && <p className="text-xs text-gray-400 line-through">{formatCurrency(product.price)}</p>}
                     </td>
                     <td className="p-3">
-                      <span className={`badge ${product.stockQuantity <= 5 ? 'badge-yellow' : product.stockQuantity === 0 ? 'badge-red' : 'badge-green'} text-xs`}>
-                        {product.stockQuantity}
+                      <span className={`badge ${product.stock === 0 ? 'badge-red' : product.stock <= 5 ? 'badge-yellow' : 'badge-green'} text-xs`}>
+                        {product.stock}
                       </span>
                     </td>
                     <td className="p-3">

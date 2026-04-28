@@ -84,7 +84,7 @@ export default function CheckoutPage() {
     queryFn: () => api.get('/auth/addresses').then((r) => r.data),
   });
 
-  const total = getTotal();
+  const totalObj = getTotal();
 
   const orderMutation = useMutation({
     mutationFn: (payload) => api.post('/orders', payload),
@@ -131,7 +131,7 @@ export default function CheckoutPage() {
       addressId: selectedAddress,
       paymentMethod,
       couponCode: coupon?.code,
-      items: items.map((i) => ({ productId: i.id, quantity: i.quantity, colorVariant: i.colorVariant })),
+      items: items.map((i) => ({ productId: i.productId, quantity: i.quantity, colorVariant: i.colorVariant })),
     });
   };
 
@@ -188,9 +188,9 @@ export default function CheckoutPage() {
                 <div className="card space-y-2">
                   <p className="font-semibold text-gray-700">Items ({items.length})</p>
                   {items.map((item) => (
-                    <div key={item.id} className="flex justify-between text-sm text-gray-700">
-                      <span>{item.name} × {item.quantity}</span>
-                      <span>{formatCurrency(item.price * item.quantity)}</span>
+                    <div key={item.productId} className="flex justify-between text-sm text-gray-700">
+                      <span>{item.product?.name} × {item.quantity}</span>
+                      <span>{formatCurrency(item.unitPrice * item.quantity)}</span>
                     </div>
                   ))}
                 </div>
@@ -226,11 +226,11 @@ export default function CheckoutPage() {
             <div className="card space-y-3 sticky top-20">
               <h3 className="font-bold text-gray-900">Summary</h3>
               <div className="space-y-1 text-sm">
-                <div className="flex justify-between text-gray-600"><span>{items.length} item(s)</span><span>{formatCurrency(items.reduce((sum, i) => sum + i.price * i.quantity, 0))}</span></div>
+                <div className="flex justify-between text-gray-600"><span>{items.length} item(s)</span><span>{formatCurrency(totalObj.subtotal)}</span></div>
                 {discountAmount > 0 && <div className="flex justify-between text-green-600"><span>Discount</span><span>-{formatCurrency(discountAmount)}</span></div>}
-                <div className="flex justify-between text-gray-600"><span>GST</span><span>{formatCurrency(Math.round(total * 0.18 / 1.18))}</span></div>
+                <div className="flex justify-between text-gray-600"><span>GST</span><span>{formatCurrency(totalObj.gst)}</span></div>
                 <div className="flex justify-between text-gray-600"><span>Delivery</span><span className="text-green-600">FREE</span></div>
-                <div className="border-t pt-2 flex justify-between font-bold text-gray-900"><span>Total</span><span>{formatCurrency(total)}</span></div>
+                <div className="border-t pt-2 flex justify-between font-bold text-gray-900"><span>Total</span><span>{formatCurrency(totalObj.total)}</span></div>
               </div>
             </div>
           </div>
